@@ -2,11 +2,11 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const { sequelize } = require('./config/db');
 
 dotenv.config();
 
-connectDB();
+// connectDB(); // Removed Mongoose connection
 
 const app = express();
 
@@ -27,12 +27,15 @@ app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
 
 app.get('/', (req, res) => {
-    const dbStatus = mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected';
-    res.send(`API is running... (DB: ${dbStatus})`);
+    res.send('API is running...');
 });
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+sequelize.sync().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}).catch((err) => {
+    console.log('Error syncing database:', err);
 });

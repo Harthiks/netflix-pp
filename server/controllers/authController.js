@@ -7,28 +7,30 @@ const generateToken = require('../utils/generateToken');
 const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ where: { email } });
 
     if (userExists) {
         res.status(400).json({ message: 'User already exists' });
         return;
     }
 
-    const user = await User.create({
-        name,
-        email,
-        password
-    });
-
-    if (user) {
-        generateToken(res, user._id);
-        res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email
+    try {
+        const user = await User.create({
+            name,
+            email,
+            password
         });
-    } else {
-        res.status(400).json({ message: 'Invalid user data' });
+
+        if (user) {
+            generateToken(res, user.id);
+            res.status(201).json({
+                _id: user.id,
+                name: user.name,
+                email: user.email
+            });
+        }
+    } catch (error) {
+        res.status(400).json({ message: 'Invalid user data', error: error.message });
     }
 };
 
@@ -38,12 +40,12 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
 
     if (user && (await user.matchPassword(password))) {
-        generateToken(res, user._id);
+        generateToken(res, user.id);
         res.json({
-            _id: user._id,
+            _id: user.id,
             name: user.name,
             email: user.email
         });
@@ -68,7 +70,7 @@ const logoutUser = (req, res) => {
 // @access  Private
 const getUserProfile = async (req, res) => {
     const user = {
-        _id: req.user._id,
+        _id: req.user.id,
         name: req.user.name,
         email: req.user.email
     };

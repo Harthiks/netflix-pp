@@ -1,13 +1,20 @@
-const mongoose = require('mongoose');
+const { Sequelize } = require('sequelize');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const sequelize = new Sequelize(process.env.MONGO_URI, {
+    dialect: 'mysql',
+    logging: false, // Set to console.log to see SQL queries
+});
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/netflix-app');
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        await sequelize.authenticate();
+        console.log('MySQL Connected successfully.');
     } catch (error) {
-        console.error(`Error: ${error.message}`);
-        // process.exit(1); // Do not exit, keep server running for better feedback
+        console.error('Unable to connect to the database:', error);
     }
 };
 
-module.exports = connectDB;
+module.exports = { sequelize, connectDB };
