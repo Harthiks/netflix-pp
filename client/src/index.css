@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+:root {
+  --color-netflix-red: #E50914;
+  --color-netflix-black: #141414;
+  --color-netflix-gray: #808080;
+}
+
+body {
+  background-color: var(--color-netflix-black);
+  color: white;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[var(--color-netflix-red)] text-white px-4 py-2 rounded hover:bg-red-700 transition duration-300;
+  }
+}

@@ -1,0 +1,19 @@
+{
+    "name": "netflix-clone",
+    "version": "1.0.0",
+    "description": "MERN Stack Netflix Clone",
+    "main": "server/index.js",
+    "scripts": {
+        "start": "node server/index.js",
+        "server": "cd server && npm start",
+        "client": "cd client && npm run dev",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "install-all": "npm install && cd server && npm install && cd client && npm install"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "concurrently": "^9.2.1"
+    }
+}
