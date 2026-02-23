@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.MONGO_URI, {
+const sequelize = new Sequelize(process.env.MYSQL_URI, {
     dialect: 'mysql',
     logging: false, // Set to console.log to see SQL queries
 });
